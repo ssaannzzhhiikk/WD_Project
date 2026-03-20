@@ -1,6 +1,6 @@
-# 🌍 Project 09 — Air Quality Monitoring & Pollution Prediction Agent
+# 🌍 Project 09 — AirWatch
 
-An AI-powered system that monitors air quality in real time and predicts pollution levels using machine learning models, integrating data from IoT sensors, satellites, and public APIs.
+A web-based system that monitors air quality in real time using public APIs. The platform provides users with up-to-date air pollution data, including key indicators such as PM2.5, PM10, and AQI, through a clean dashboard and interactive map.
 
 ---
 
@@ -21,22 +21,20 @@ An AI-powered system that monitors air quality in real time and predicts polluti
 | Frontend | Angular + TailwindCSS |
 | Backend | Django + Django REST Framework |
 | Database | PostgreSQL |
-| ML / Forecasting | Python (LSTM, ARIMA, Prophet) |
 | Air Quality Data | OpenAQ Public API |
-| Task Queue | Celery (scheduled predictions) |
 
 ---
 
 ## 📁 Project Structure
 
-```
-air-quality/
+airwatch/
 ├── frontend/          # Angular app
 │   └── src/
 │       ├── app/
 │       │   ├── components/
 │       │   │   ├── dashboard/
-│       │   │   └── map/
+│       │   │   ├── map/
+│       │   │   └── login/
 │       │   ├── services/
 │       │   └── app.routes.ts
 │       └── index.html
@@ -44,7 +42,6 @@ air-quality/
     ├── airquality/    # Django app
     ├── manage.py
     └── requirements.txt
-```
 
 ---
 
@@ -52,35 +49,30 @@ air-quality/
 
 ### Frontend
 
-```bash
 cd frontend
 npm install
 ng serve
-```
 
 ### Backend
 
-```bash
 cd backend
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
-```
 
 ---
 
 ## 🌐 Data Sources
 
-- [OpenAQ](https://openaq.org/) — Real-time air quality data
-- [NASA EarthData](https://earthdata.nasa.gov/)
-- [Sentinel-5P](https://sentinel.esa.int/web/sentinel/missions/sentinel-5p)
+- OpenAQ — Real-time air quality data
 
 ---
 
 ## 📌 Key Features
 
-- Real-time air quality dashboard (PM2.5, PM10, CO2, AQI)
+- Real-time air quality dashboard (PM2.5, PM10, AQI)
 - Interactive pollution map with Leaflet.js
-- ML-based forecasting of pollution trends
-- Anomaly detection for sudden pollution spikes
+- User authentication (login/logout with JWT)
+- Ability to view and manage selected cities
 - REST API powered by Django REST Framework
+- Error handling and user-friendly interface
