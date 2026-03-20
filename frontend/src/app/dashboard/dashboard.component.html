@@ -1,0 +1,60 @@
+<div class="p-6">
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">Air Quality Dashboard</h1>
+      <p class="text-sm text-gray-500 mb-6">Almaty, Kazakhstan — Live monitoring stations</p>
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-2xl shadow p-5 border-l-4 border-blue-400">
+          <p class="text-sm text-gray-500">Stations Found</p>
+          <p class="text-3xl font-bold text-blue-600">{{ locations.length }}</p>
+          <p class="text-xs text-gray-400">within 15km of city center</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 border-l-4 border-green-400">
+          <p class="text-sm text-gray-500">Reference Monitors</p>
+          <p class="text-3xl font-bold text-green-600">{{ monitorCount }}</p>
+          <p class="text-xs text-gray-400">certified stations</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 border-l-4 border-yellow-400">
+          <p class="text-sm text-gray-500">Air Sensors</p>
+          <p class="text-3xl font-bold text-yellow-600">{{ sensorCount }}</p>
+          <p class="text-xs text-gray-400">low-cost sensors</p>
+        </div>
+      </div>
+
+      <!-- Locations table -->
+      <div class="bg-white rounded-2xl shadow p-5">
+        <h2 class="text-lg font-semibold mb-3 text-gray-700">Almaty Monitoring Locations</h2>
+
+        <p *ngIf="loading" class="text-gray-400 text-sm">Loading...</p>
+        <p *ngIf="!loading && locations.length === 0" class="text-gray-400 text-sm">No stations found.</p>
+
+        <table *ngIf="!loading && locations.length > 0" class="w-full text-sm text-left">
+          <thead class="text-gray-500 border-b">
+            <tr>
+              <th class="py-2 pr-4">Station Name</th>
+              <th class="py-2 pr-4">Type</th>
+              <th class="py-2 pr-4">Locality</th>
+              <th class="py-2">Last Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let loc of locations" class="border-b hover:bg-gray-50">
+              <td class="py-2 pr-4 font-medium">{{ loc.name }}</td>
+              <td class="py-2 pr-4">
+                <span
+                  class="text-xs px-2 py-1 rounded-full font-medium"
+                  [ngClass]="loc.isMonitor
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-yellow-100 text-yellow-700'">
+                  {{ loc.isMonitor ? 'Monitor' : 'Sensor' }}
+                </span>
+              </td>
+              <td class="py-2 pr-4 text-gray-500">{{ loc.locality ?? 'N/A' }}</td>
+              <td class="py-2 text-gray-500 text-xs">
+                {{ loc.datetimeLast?.utc ? (loc.datetimeLast!.utc | date:'short') : '—' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
