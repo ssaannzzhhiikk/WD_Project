@@ -1,0 +1,10 @@
+{
+  "/almaty-air": {
+    "target": "https://api.air.org.kz",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/almaty-air": ""
+    },
+    "secure": true
+  }
+}
