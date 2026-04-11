@@ -1,5 +1,8 @@
 @import "tailwindcss";
+<<<<<<< HEAD
 @import "leaflet/dist/leaflet.css";
+=======
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
 
 :root {
   --airwatch-navy: #07111f;
@@ -62,6 +65,7 @@ textarea {
     linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
   background-size: 36px 36px;
 }
+<<<<<<< HEAD
 
 .metric-good {
   border-color: rgba(34, 197, 94, 0.2);
@@ -109,3 +113,5 @@ textarea {
 .leaflet-popup-tip {
   background: rgba(255, 255, 255, 0.96);
 }
+=======
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   AfterViewInit,
   Component,
@@ -11,6 +12,11 @@ import {
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import * as L from 'leaflet';
+=======
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DatePipe, DecimalPipe } from '@angular/common';
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
 import { AirQualityRecord, MapLocation } from '../../../../core/models/api.models';
 import { AirQualityService } from '../../../../core/services/air-quality.service';
 import { ErrorAlertComponent } from '../../../../shared/components/error-alert/error-alert.component';
@@ -27,8 +33,13 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
           <p class="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-300">Station Map</p>
           <h1 class="page-title mt-4 text-white">Live Almaty station overview</h1>
           <p class="mt-4 max-w-2xl text-base leading-7 text-slate-300">
+<<<<<<< HEAD
             This page now uses a real map. Station dots stay color-coded by air quality so it is
             easier to see which areas are safer and which ones need attention.
+=======
+            This view is now centered only on Almaty. It loads live station markers from the
+            Almaty Air Initiative API and lets you filter by district, source, and pollution level.
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
           </p>
         </div>
 
@@ -40,7 +51,11 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                 [(ngModel)]="districtFilter"
                 name="districtFilter"
                 type="text"
+<<<<<<< HEAD
                 placeholder="For example Bostandyk"
+=======
+                placeholder="For example Медеуский"
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
                 class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
               >
             </label>
@@ -92,12 +107,15 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
               Reset filters
             </button>
           </div>
+<<<<<<< HEAD
 
           <div class="mt-5 flex flex-wrap gap-2">
             @for (item of legendItems; track item.label) {
               <span class="metric-chip" [class]="item.className">{{ item.label }}</span>
             }
           </div>
+=======
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
         </div>
       </div>
 
@@ -107,6 +125,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
 
       <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <div class="panel-light rounded-[2rem] p-4 text-slate-900 sm:p-6">
+<<<<<<< HEAD
           <div class="relative min-h-[540px] overflow-hidden rounded-[1.5rem]">
             <div #mapHost class="h-[540px] w-full"></div>
 
@@ -130,6 +149,46 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
               </div>
             }
           </div>
+=======
+          @if (loading()) {
+            <app-loading-state
+              message="Loading Almaty station map..."
+              detail="AirWatch is requesting fresh PM2.5, PM10, and NO2 station points from the API."
+            />
+          } @else {
+            <div class="subtle-grid relative min-h-[540px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_top,#d7f4ff_0%,#eff8ff_38%,#f8fbff_100%)]">
+              <div class="absolute inset-x-6 top-6 rounded-2xl bg-white/85 p-4 shadow-sm backdrop-blur">
+                <p class="text-sm font-semibold text-slate-900">Map-ready Almaty canvas</p>
+                <p class="mt-1 text-sm text-slate-600">
+                  Marker positions are placed using station coordinates inside an Almaty-focused
+                  bounding box, so a real Leaflet map can be connected later with minimal changes.
+                </p>
+              </div>
+
+              @for (location of locations(); track location.id) {
+                <button
+                  type="button"
+                  (click)="selectLocation(location)"
+                  [style.left.%]="getLeft(location)"
+                  [style.top.%]="getTop(location)"
+                  [class]="'absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white p-3 shadow-lg transition hover:scale-110 ' + getMarkerClass(location)"
+                  [attr.aria-label]="'View ' + (location.label || location.district || location.city) + ' details'"
+                >
+                  <span class="block h-2 w-2 rounded-full bg-white"></span>
+                </button>
+              } @empty {
+                <div class="flex min-h-[540px] items-center justify-center p-8 text-center text-slate-600">
+                  <div>
+                    <p class="text-lg font-semibold text-slate-900">No fresh stations found</p>
+                    <p class="mt-2 max-w-md text-sm leading-6">
+                      Adjust the district or source filters, then request the data again.
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
         </div>
 
         <aside class="flex flex-col gap-6">
@@ -166,6 +225,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                 />
               </div>
             } @else if (currentDetails(); as details) {
+<<<<<<< HEAD
               <div class="mt-5 space-y-4">
                 <div class="rounded-[1.5rem] border p-5 text-sm" [class]="getAqiSurfaceClass(details.aqi)">
                   <p>District: <span class="font-medium">{{ details.district }}</span></p>
@@ -175,6 +235,14 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                   <p>Risk level: <span class="font-medium">{{ getRiskLabel(details.aqi) }}</span></p>
                   <p>Updated: <span class="font-medium">{{ details.updatedAt | date: 'medium' }}</span></p>
                 </div>
+=======
+              <div class="mt-5 space-y-3 rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-sm text-slate-200">
+                <p>District: <span class="font-medium text-white">{{ details.district }}</span></p>
+                <p>AQI: <span class="font-medium text-white">{{ details.aqi | number: '1.0-0' }}</span></p>
+                <p>PM2.5: <span class="font-medium text-white">{{ details.pm25 | number: '1.0-1' }}</span></p>
+                <p>PM10: <span class="font-medium text-white">{{ details.pm10 | number: '1.0-1' }}</span></p>
+                <p>Updated: <span class="font-medium text-white">{{ details.updatedAt | date: 'medium' }}</span></p>
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
               </div>
             } @else {
               <div class="mt-5 rounded-[1.5rem] border border-dashed border-white/15 p-5 text-sm leading-6 text-slate-300">
@@ -190,7 +258,11 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
               @for (location of locations(); track location.id) {
                 <button
                   type="button"
+<<<<<<< HEAD
                   (click)="selectLocation(location, true)"
+=======
+                  (click)="selectLocation(location)"
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
                   class="flex w-full items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-left transition hover:border-cyan-500 hover:bg-cyan-50"
                 >
                   <div>
@@ -201,7 +273,11 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                       {{ location.district }} • {{ location.source }}
                     </p>
                   </div>
+<<<<<<< HEAD
                   <span class="rounded-full px-3 py-1 text-xs font-semibold" [class]="getAqiBadgeClass(location.aqi)">
+=======
+                  <span class="rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold text-white">
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
                     AQI {{ location.aqi | number: '1.0-0' }}
                   </span>
                 </button>
@@ -217,10 +293,15 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
     </section>
   `,
 })
+<<<<<<< HEAD
 export class MapPageComponent implements AfterViewInit {
   private readonly airQualityService = inject(AirQualityService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly mapHost = viewChild.required<ElementRef<HTMLDivElement>>('mapHost');
+=======
+export class MapPageComponent {
+  private readonly airQualityService = inject(AirQualityService);
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
 
   districtFilter = '';
   sourceFilter = '';
@@ -234,6 +315,7 @@ export class MapPageComponent implements AfterViewInit {
   readonly error = signal('');
   readonly detailsError = signal('');
 
+<<<<<<< HEAD
   readonly legendItems = [
     { label: 'Good', className: 'metric-good' },
     { label: 'Moderate', className: 'metric-moderate' },
@@ -265,6 +347,12 @@ export class MapPageComponent implements AfterViewInit {
     setTimeout(() => this.map?.invalidateSize(), 0);
   }
 
+=======
+  constructor() {
+    this.refreshMapData();
+  }
+
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
   refreshMapData(): void {
     this.loading.set(true);
     this.error.set('');
@@ -316,6 +404,7 @@ export class MapPageComponent implements AfterViewInit {
     this.refreshMapData();
   }
 
+<<<<<<< HEAD
   selectLocation(location: MapLocation, recenter = false): void {
     this.selectedLocation.set(location);
     this.currentDetails.set(null);
@@ -327,6 +416,12 @@ export class MapPageComponent implements AfterViewInit {
         duration: 0.7,
       });
     }
+=======
+  selectLocation(location: MapLocation): void {
+    this.selectedLocation.set(location);
+    this.currentDetails.set(null);
+    this.detailsError.set('');
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
   }
 
   loadSelectedDistrictDetails(): void {
@@ -351,6 +446,7 @@ export class MapPageComponent implements AfterViewInit {
     });
   }
 
+<<<<<<< HEAD
   getAqiSurfaceClass(aqi: number): string {
     if (aqi <= 50) {
       return 'metric-good';
@@ -484,5 +580,39 @@ export class MapPageComponent implements AfterViewInit {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+=======
+  getLeft(location: MapLocation): number {
+    const minLon = 76.73;
+    const maxLon = 77.06;
+    return this.clamp(((location.longitude - minLon) / (maxLon - minLon)) * 100, 8, 92);
+  }
+
+  getTop(location: MapLocation): number {
+    const minLat = 43.14;
+    const maxLat = 43.41;
+    return this.clamp(((maxLat - location.latitude) / (maxLat - minLat)) * 100, 15, 88);
+  }
+
+  getMarkerClass(location: MapLocation): string {
+    const base = this.selectedLocation()?.id === location.id ? 'ring-4 ring-slate-900/20 ' : '';
+
+    if (location.aqi <= 50) {
+      return `${base}bg-emerald-500`;
+    }
+
+    if (location.aqi <= 100) {
+      return `${base}bg-amber-500`;
+    }
+
+    if (location.aqi <= 150) {
+      return `${base}bg-orange-500`;
+    }
+
+    return `${base}bg-rose-500`;
+  }
+
+  private clamp(value: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, value));
+>>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
   }
 }
