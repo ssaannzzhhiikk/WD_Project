@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { AirQualityRecord } from '../../../../core/models/api.models';
 import { AirQualityService } from '../../../../core/services/air-quality.service';
@@ -20,14 +20,9 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
             <div>
               <h1 class="page-title text-white">Live district air quality across Almaty</h1>
               <p class="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-<<<<<<< HEAD
                 AirWatch now focuses only on Almaty. The metric colors below make the risk easy to
                 read during a quick demo: green is better, yellow means caution, orange is worse,
                 and red highlights unhealthy air.
-=======
-                AirWatch now focuses only on Almaty. Load the city snapshot, filter by district,
-                refresh the board, and request personalized district advice for your defense demo.
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
               </p>
             </div>
 
@@ -43,15 +38,8 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                 </p>
               </div>
               <div>
-<<<<<<< HEAD
                 <p class="text-slate-400">Highest district AQI</p>
                 <p class="mt-2 text-2xl font-semibold text-white">{{ highestAqi() | number: '1.0-0' }}</p>
-=======
-                <p class="text-slate-400">Stations used</p>
-                <p class="mt-2 text-2xl font-semibold text-white">
-                  {{ citySummary()?.stationCount || 0 }}
-                </p>
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
               </div>
             </div>
           </div>
@@ -65,13 +53,9 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
               [(ngModel)]="districtQuery"
               name="districtQuery"
               type="text"
-<<<<<<< HEAD
               placeholder="Type a district name, for example Bostandyk"
-=======
-              placeholder="Use API district text, for example Алмалинский"
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
               class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-            >
+            />
           </label>
 
           <div class="mt-5 grid gap-3 sm:grid-cols-2">
@@ -125,9 +109,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                   <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-700">City-wide snapshot</p>
                     <h2 class="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Almaty, Kazakhstan</h2>
-                    <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-                      {{ summary.note }}
-                    </p>
+                    <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">{{ summary.note }}</p>
                   </div>
 
                   <div class="rounded-2xl bg-slate-950 px-4 py-3 text-white">
@@ -137,27 +119,20 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                 </div>
 
                 <div class="mt-5 grid gap-3 sm:grid-cols-4">
-<<<<<<< HEAD
                   <div class="rounded-2xl border p-4" [class]="getAqiSurfaceClass(summary.aqi)">
                     <p class="text-xs uppercase tracking-[0.24em]">AQI</p>
                     <p class="mt-2 text-2xl font-semibold">{{ summary.aqi | number: '1.0-0' }}</p>
-                    <p class="mt-1 text-xs font-medium uppercase tracking-[0.18em]">
-                      {{ getRiskLabel(summary.aqi) }}
-                    </p>
+                    <p class="mt-1 text-xs font-medium uppercase tracking-[0.18em]">{{ getRiskLabel(summary.aqi) }}</p>
                   </div>
                   <div class="rounded-2xl border p-4" [class]="getPm25SurfaceClass(summary.pm25)">
                     <p class="text-xs uppercase tracking-[0.24em]">PM2.5</p>
                     <p class="mt-2 text-2xl font-semibold">{{ summary.pm25 | number: '1.0-1' }}</p>
-                    <p class="mt-1 text-xs font-medium uppercase tracking-[0.18em]">
-                      {{ getPm25Label(summary.pm25) }}
-                    </p>
+                    <p class="mt-1 text-xs font-medium uppercase tracking-[0.18em]">{{ getPm25Label(summary.pm25) }}</p>
                   </div>
                   <div class="rounded-2xl border p-4" [class]="getPm10SurfaceClass(summary.pm10)">
                     <p class="text-xs uppercase tracking-[0.24em]">PM10</p>
                     <p class="mt-2 text-2xl font-semibold">{{ summary.pm10 | number: '1.0-1' }}</p>
-                    <p class="mt-1 text-xs font-medium uppercase tracking-[0.18em]">
-                      {{ getPm10Label(summary.pm10) }}
-                    </p>
+                    <p class="mt-1 text-xs font-medium uppercase tracking-[0.18em]">{{ getPm10Label(summary.pm10) }}</p>
                   </div>
                   <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-emerald-800">
                     <p class="text-xs uppercase tracking-[0.24em]">Stations</p>
@@ -171,25 +146,6 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                     <span class="metric-chip" [class]="item.className">{{ item.label }}</span>
                   }
                 </div>
-=======
-                  <div class="rounded-2xl bg-slate-950 p-4 text-white">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-400">AQI</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ summary.aqi | number: '1.0-0' }}</p>
-                  </div>
-                  <div class="rounded-2xl bg-cyan-50 p-4">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">PM2.5</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ summary.pm25 | number: '1.0-1' }}</p>
-                  </div>
-                  <div class="rounded-2xl bg-amber-50 p-4">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">PM10</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ summary.pm10 | number: '1.0-1' }}</p>
-                  </div>
-                  <div class="rounded-2xl bg-emerald-50 p-4">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">Stations</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ summary.stationCount || 0 }}</p>
-                  </div>
-                </div>
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
               </article>
             }
 
@@ -198,12 +154,8 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                 <article class="panel-light rounded-[1.75rem] p-6 text-slate-900">
                   <div class="flex items-start justify-between gap-4">
                     <div>
-                      <p class="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-700">
-                        {{ record.city }}
-                      </p>
-                      <h2 class="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-                        {{ record.district }}
-                      </h2>
+                      <p class="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-700">{{ record.city }}</p>
+                      <h2 class="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{{ record.district }}</h2>
                     </div>
 
                     <span class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]" [class]="getStatusClass(record.status)">
@@ -212,7 +164,6 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                   </div>
 
                   <div class="mt-5 grid grid-cols-3 gap-3">
-<<<<<<< HEAD
                     <div class="rounded-2xl border p-4" [class]="getAqiSurfaceClass(record.aqi)">
                       <p class="text-xs uppercase tracking-[0.24em]">AQI</p>
                       <p class="mt-2 text-2xl font-semibold">{{ record.aqi | number: '1.0-0' }}</p>
@@ -223,27 +174,12 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                     </div>
                     <div class="rounded-2xl border p-4" [class]="getPm10SurfaceClass(record.pm10)">
                       <p class="text-xs uppercase tracking-[0.24em]">PM10</p>
-=======
-                    <div class="rounded-2xl bg-slate-950 p-4 text-white">
-                      <p class="text-xs uppercase tracking-[0.24em] text-slate-400">AQI</p>
-                      <p class="mt-2 text-2xl font-semibold">{{ record.aqi | number: '1.0-0' }}</p>
-                    </div>
-                    <div class="rounded-2xl bg-cyan-50 p-4">
-                      <p class="text-xs uppercase tracking-[0.24em] text-slate-500">PM2.5</p>
-                      <p class="mt-2 text-2xl font-semibold">{{ record.pm25 | number: '1.0-1' }}</p>
-                    </div>
-                    <div class="rounded-2xl bg-amber-50 p-4">
-                      <p class="text-xs uppercase tracking-[0.24em] text-slate-500">PM10</p>
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
                       <p class="mt-2 text-2xl font-semibold">{{ record.pm10 | number: '1.0-1' }}</p>
                     </div>
                   </div>
 
                   <div class="mt-5 space-y-2 text-sm text-slate-600">
-<<<<<<< HEAD
                     <p>Risk level: <span class="font-medium text-slate-900">{{ getRiskLabel(record.aqi) }}</span></p>
-=======
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
                     <p>Source: <span class="font-medium text-slate-900">{{ record.source }}</span></p>
                     <p>Stations: <span class="font-medium text-slate-900">{{ record.stationCount || 0 }}</span></p>
                     @if (record.note) {
@@ -263,8 +199,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
                 <div class="panel-light rounded-[1.75rem] p-8 text-slate-700 md:col-span-2">
                   <p class="text-lg font-semibold text-slate-900">No district records yet</p>
                   <p class="mt-2 text-sm leading-6">
-                    Click <span class="font-semibold">Load Almaty snapshot</span> to request the
-                    latest district values from the live API.
+                    Click <span class="font-semibold">Load Almaty snapshot</span> to request the latest district values from the live API.
                   </p>
                 </div>
               }
@@ -275,9 +210,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-300">Advice panel</p>
-                <h2 class="mt-2 text-2xl font-semibold text-white">
-                  {{ adviceRecord()?.district || 'Choose a district' }}
-                </h2>
+                <h2 class="mt-2 text-2xl font-semibold text-white">{{ adviceRecord()?.district || 'Choose a district' }}</h2>
               </div>
               @if (adviceRecord()?.district) {
                 <button
@@ -305,20 +238,12 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
               </div>
             } @else if (adviceRecord(); as advice) {
               <div class="mt-5 space-y-4">
-<<<<<<< HEAD
                 <div class="rounded-[1.5rem] border p-5 text-sm" [class]="getAqiSurfaceClass(advice.aqi)">
                   <p>District AQI: <span class="font-medium">{{ advice.aqi | number: '1.0-0' }}</span></p>
                   <p>PM2.5: <span class="font-medium">{{ advice.pm25 | number: '1.0-1' }}</span></p>
                   <p>PM10: <span class="font-medium">{{ advice.pm10 | number: '1.0-1' }}</span></p>
                   <p>Risk level: <span class="font-medium">{{ getRiskLabel(advice.aqi) }}</span></p>
                   <p>Updated: <span class="font-medium">{{ advice.updatedAt | date: 'medium' }}</span></p>
-=======
-                <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-sm text-slate-200">
-                  <p>District AQI: <span class="font-medium text-white">{{ advice.aqi | number: '1.0-0' }}</span></p>
-                  <p>PM2.5: <span class="font-medium text-white">{{ advice.pm25 | number: '1.0-1' }}</span></p>
-                  <p>PM10: <span class="font-medium text-white">{{ advice.pm10 | number: '1.0-1' }}</span></p>
-                  <p>Updated: <span class="font-medium text-white">{{ advice.updatedAt | date: 'medium' }}</span></p>
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
                 </div>
 
                 <div class="space-y-3">
@@ -354,7 +279,6 @@ export class DashboardPageComponent {
   readonly error = signal('');
   readonly adviceError = signal('');
 
-<<<<<<< HEAD
   readonly legendItems = [
     { label: 'Good', className: 'metric-good' },
     { label: 'Moderate', className: 'metric-moderate' },
@@ -362,8 +286,6 @@ export class DashboardPageComponent {
     { label: 'Hazardous', className: 'metric-hazardous' },
   ];
 
-=======
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
   readonly highestAqi = computed(() => {
     const items = this.records();
     return items.length ? Math.max(...items.map((item) => item.aqi)) : 0;
@@ -481,10 +403,21 @@ export class DashboardPageComponent {
         return 'bg-rose-100 text-rose-700';
     }
   }
-<<<<<<< HEAD
 
   getAqiSurfaceClass(aqi: number): string {
-    return this.getMetricClassByAqi(aqi);
+    if (aqi <= 50) {
+      return 'metric-good';
+    }
+
+    if (aqi <= 100) {
+      return 'metric-moderate';
+    }
+
+    if (aqi <= 150) {
+      return 'metric-unhealthy';
+    }
+
+    return 'metric-hazardous';
   }
 
   getPm25SurfaceClass(pm25: number): string {
@@ -566,22 +499,4 @@ export class DashboardPageComponent {
 
     return 'Very High';
   }
-
-  private getMetricClassByAqi(aqi: number): string {
-    if (aqi <= 50) {
-      return 'metric-good';
-    }
-
-    if (aqi <= 100) {
-      return 'metric-moderate';
-    }
-
-    if (aqi <= 150) {
-      return 'metric-unhealthy';
-    }
-
-    return 'metric-hazardous';
-  }
-=======
->>>>>>> 2ce35a74a2da3164577dbff8dbbd9e6365209004
 }
