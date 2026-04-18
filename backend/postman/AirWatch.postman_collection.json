@@ -1,0 +1,321 @@
+{
+  "info": {
+    "_postman_id": "5cb1d5f2-0ad4-45a3-947e-e3fd2d514100",
+    "name": "AirWatch Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for the AirWatch Django + DRF backend."
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"demo\",\n  \"password\": \"demo12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login", ""]
+            }
+          },
+          "response": [
+            {
+              "name": "Login Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identifier\": \"demo\",\n  \"password\": \"demo12345\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"access\": \"<jwt-access>\",\n  \"refresh\": \"<jwt-refresh>\",\n  \"user\": {\n    \"id\": 1,\n    \"username\": \"demo\",\n    \"email\": \"demo@airwatch.local\",\n    \"fullName\": \"Demo User\",\n    \"role\": \"student\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout", ""]
+            }
+          },
+          "response": [
+            {
+              "name": "Logout Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/logout/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Logged out successfully.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Air Quality",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/air-quality/dashboard/?district=Almaly&min_aqi=50&ordering=-aqi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "air-quality", "dashboard", ""],
+              "query": [
+                { "key": "district", "value": "Almaly" },
+                { "key": "min_aqi", "value": "50" },
+                { "key": "ordering", "value": "-aqi" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Dashboard Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/api/air-quality/dashboard/"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": 2,\n    \"city\": \"Almaty\",\n    \"country\": \"Kazakhstan\",\n    \"district\": \"Almaly\",\n    \"district_name\": \"Almaly\",\n    \"aqi\": 91,\n    \"pm25\": \"27.20\",\n    \"pm10\": \"79.30\",\n    \"no2\": \"20.50\",\n    \"updatedAt\": \"2026-04-17T15:00:00Z\",\n    \"source\": \"AirWatch Demo Seed\",\n    \"latitude\": \"43.256700\",\n    \"longitude\": \"76.928600\",\n    \"stationCount\": 4,\n    \"status\": \"moderate\",\n    \"note\": \"Almaly seeded demo data for university defense.\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Map Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/air-quality/map/?min_aqi=60",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "air-quality", "map", ""],
+              "query": [
+                { "key": "min_aqi", "value": "60" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Map Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/api/air-quality/map/" }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": 2,\n    \"city\": \"Almaty\",\n    \"country\": \"Kazakhstan\",\n    \"district\": \"Almaly\",\n    \"latitude\": \"43.256700\",\n    \"longitude\": \"76.928600\",\n    \"aqi\": 91,\n    \"pm25\": \"27.20\",\n    \"pm10\": \"79.30\",\n    \"no2\": \"20.50\",\n    \"updatedAt\": \"2026-04-17T15:00:00Z\",\n    \"label\": \"Almaly Station\",\n    \"source\": \"AirWatch Demo Seed\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/air-quality/history/Almaly/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "air-quality", "history", "Almaly", ""]
+            }
+          },
+          "response": [
+            {
+              "name": "History Success",
+              "originalRequest": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/api/air-quality/history/Almaly/" }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"timestamp\": \"2026-04-17T15:00:00Z\",\n    \"aqi\": 91,\n    \"pm25\": \"27.20\",\n    \"pm10\": \"79.30\",\n    \"label\": \"Almaly\",\n    \"value\": \"27.20\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cities CRUD",
+      "item": [
+        {
+          "name": "List Cities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cities/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cities", ""]
+            }
+          }
+        },
+        {
+          "name": "Create City",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Almaty\",\n  \"country\": \"Kazakhstan\",\n  \"aqi_threshold\": 85,\n  \"note\": \"Prefer indoor workouts when threshold is exceeded.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cities/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cities", ""]
+            }
+          },
+          "response": [
+            {
+              "name": "Create City Success",
+              "originalRequest": {
+                "method": "POST",
+                "url": { "raw": "{{baseUrl}}/api/cities/" }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Almaty\",\n  \"country\": \"Kazakhstan\",\n  \"aqi_threshold\": 85,\n  \"note\": \"Prefer indoor workouts when threshold is exceeded.\",\n  \"createdAt\": \"2026-04-17T15:00:00Z\",\n  \"updatedAt\": \"2026-04-17T15:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update City",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aqi_threshold\": 95,\n  \"note\": \"Updated for demo.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cities/1/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cities", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Delete City",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cities/1/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cities", "1", ""]
+            }
+          },
+          "response": [
+            {
+              "name": "Delete City Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": { "raw": "{{baseUrl}}/api/cities/1/" }
+              },
+              "status": "No Content",
+              "code": 204,
+              "_postman_previewlanguage": "json",
+              "body": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ]
+}
