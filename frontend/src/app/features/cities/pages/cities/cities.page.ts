@@ -18,243 +18,199 @@ type SuggestionPreview = Omit<SavedSuggestion, 'id' | 'createdAt' | 'updatedAt'>
   standalone: true,
   imports: [FormsModule, DatePipe, DecimalPipe, ErrorAlertComponent, LoadingStateComponent],
   template: `
-    <section class="flex w-full flex-col gap-6">
-      <div class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <div class="panel-surface rounded-[2rem] px-6 py-8 sm:px-8">
-          <p class="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-300">Suggestions</p>
-          <h1 class="page-title mt-4 text-white">Personalized Almaty air quality advice</h1>
-          <p class="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-            Generate simple recommendations for residents based on the selected Almaty district,
-            current pollution, activity type, and sensitivity level. Save the best suggestion cards
-            locally for your defense presentation.
-          </p>
-        </div>
+    <div class="stack">
 
-        <div class="panel-light rounded-[2rem] px-6 py-8 text-slate-900">
-          <p class="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-700">Build a suggestion</p>
+      <div class="page-header">
+        <h1>Personalized Suggestions</h1>
+        <p>Generate and save air quality recommendations for Almaty districts</p>
+      </div>
 
-          <div class="mt-5 grid gap-4 md:grid-cols-2">
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">District</span>
+      <!-- Build form -->
+      <div class="card">
+        <div class="card-body">
+          <div class="card-subtitle">Build a suggestion</div>
+          <div class="card-title" style="margin-bottom:16px">Suggestion form</div>
+
+          <div class="grid-2" style="margin-bottom:14px">
+            <div class="form-group">
+              <label class="form-label">District</label>
               <input
                 [(ngModel)]="form.district"
                 name="district"
                 type="text"
-                placeholder="Copy a district label, for example Бостандыкский"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              >
-            </label>
+                placeholder="e.g. Бостандыкский"
+                class="form-control"
+              />
+            </div>
 
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">Activity type</span>
-              <select
-                [(ngModel)]="form.activityType"
-                name="activityType"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              >
+            <div class="form-group">
+              <label class="form-label">Activity type</label>
+              <select [(ngModel)]="form.activityType" name="activityType" class="form-control">
                 <option value="walking">Walking</option>
                 <option value="commute">Daily commute</option>
                 <option value="outdoor-sport">Outdoor sport</option>
                 <option value="family-time">Family time outside</option>
               </select>
-            </label>
+            </div>
 
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">Sensitivity</span>
-              <select
-                [(ngModel)]="form.sensitivityLevel"
-                name="sensitivityLevel"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              >
+            <div class="form-group">
+              <label class="form-label">Sensitivity level</label>
+              <select [(ngModel)]="form.sensitivityLevel" name="sensitivityLevel" class="form-control">
                 <option value="low">Low sensitivity</option>
                 <option value="medium">Medium sensitivity</option>
                 <option value="high">High sensitivity</option>
               </select>
-            </label>
+            </div>
 
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">Travel mode</span>
-              <select
-                [(ngModel)]="form.travelMode"
-                name="travelMode"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              >
+            <div class="form-group">
+              <label class="form-label">Travel mode</label>
+              <select [(ngModel)]="form.travelMode" name="travelMode" class="form-control">
                 <option value="walking">Walking</option>
                 <option value="public-transport">Public transport</option>
                 <option value="car">Car</option>
                 <option value="mixed">Mixed</option>
               </select>
-            </label>
+            </div>
           </div>
 
-          <label class="mt-4 block">
-            <span class="mb-2 block text-sm font-medium text-slate-700">Presentation note</span>
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">Notes (optional)</label>
             <textarea
               [(ngModel)]="form.note"
               name="note"
-              rows="3"
-              placeholder="Optional context for your presentation or user story"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
+              rows="2"
+              placeholder="Optional context for your presentation"
+              class="form-control"
             ></textarea>
-          </label>
+          </div>
 
-          <div class="mt-5 flex flex-wrap gap-3">
-            <button
-              type="button"
-              (click)="generateSuggestion()"
-              class="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              {{ generating() ? 'Generating...' : 'Generate suggestion' }}
+          <div class="btn-row">
+            <button type="button" (click)="generateSuggestion()" class="btn btn-primary">
+              {{ generating() ? 'Generating…' : 'Generate suggestion' }}
             </button>
-            <button
-              type="button"
-              (click)="saveSuggestion()"
-              class="rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-cyan-500 hover:text-cyan-700"
-            >
-              Save suggestion
-            </button>
-            <button
-              type="button"
-              (click)="loadSavedSuggestions()"
-              class="rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-cyan-500 hover:text-cyan-700"
-            >
-              Reload saved suggestions
-            </button>
-            <button
-              type="button"
-              (click)="resetForm()"
-              class="rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-cyan-500 hover:text-cyan-700"
-            >
-              Reset form
-            </button>
+            <button type="button" (click)="saveSuggestion()"       class="btn btn-secondary">Save suggestion</button>
+            <button type="button" (click)="loadSavedSuggestions()" class="btn btn-secondary">Reload saved</button>
+            <button type="button" (click)="resetForm()"            class="btn btn-secondary">Reset form</button>
           </div>
         </div>
       </div>
 
       @if (successMessage()) {
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-medium text-emerald-900">
-          {{ successMessage() }}
-        </div>
+        <div class="alert alert-success">{{ successMessage() }}</div>
       }
-
       @if (error()) {
         <app-error-alert title="Suggestion request failed" [message]="error()" />
       }
 
-      <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <div class="panel-light rounded-[2rem] p-6 text-slate-900">
-          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-700">Live preview</p>
+      <div class="split-layout">
 
-          @if (generating()) {
-            <div class="mt-5">
-              <app-loading-state
-                message="Generating recommendation..."
-                detail="AirWatch is requesting the latest district values before composing a recommendation."
-              />
-            </div>
-          } @else if (preview(); as suggestion) {
-            <div class="mt-5 space-y-4">
-              <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-                <div class="flex items-start justify-between gap-4">
-                  <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">
-                      {{ suggestion.district }}
-                    </p>
-                    <h2 class="mt-2 text-2xl font-semibold text-slate-950">
-                      {{ suggestion.summary }}
-                    </h2>
+        <!-- Live preview -->
+        <div class="card">
+          <div class="card-body">
+            <div class="card-subtitle">Live preview</div>
+            <div class="card-title" style="margin-bottom:14px">Generated suggestion</div>
+
+            @if (generating()) {
+              <app-loading-state message="Generating recommendation…" />
+            } @else if (preview(); as suggestion) {
+              <div class="stack-sm">
+                <div class="preview-card">
+                  <div class="preview-header">
+                    <div>
+                      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">
+                        {{ suggestion.district }}
+                      </div>
+                      <h3 style="margin:0;font-size:16px;font-weight:700">{{ suggestion.summary }}</h3>
+                    </div>
+                    <span class="badge" [class]="'badge-' + suggestion.riskLevel">
+                      {{ suggestion.riskLevel }}
+                    </span>
                   </div>
-                  <span class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]" [class]="getStatusClass(suggestion.riskLevel)">
-                    {{ suggestion.riskLevel }}
-                  </span>
+                  <div class="grid-3">
+                    <div class="metric-tile metric-good" style="text-align:center">
+                      <div class="mt-label">AQI</div>
+                      <div class="mt-value">{{ suggestion.currentAqi }}</div>
+                    </div>
+                    <div class="metric-tile metric-moderate" style="text-align:center">
+                      <div class="mt-label">PM2.5</div>
+                      <div class="mt-value">{{ suggestion.currentPm25 | number:'1.0-1' }}</div>
+                    </div>
+                    <div class="metric-tile metric-unhealthy" style="text-align:center">
+                      <div class="mt-label">PM10</div>
+                      <div class="mt-value">{{ suggestion.currentPm10 | number:'1.0-1' }}</div>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="mt-5 grid gap-3 sm:grid-cols-3">
-                  <div class="rounded-2xl bg-slate-950 p-4 text-white">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-400">AQI</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ suggestion.currentAqi }}</p>
-                  </div>
-                  <div class="rounded-2xl bg-cyan-50 p-4">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">PM2.5</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ suggestion.currentPm25 | number: '1.0-1' }}</p>
-                  </div>
-                  <div class="rounded-2xl bg-amber-50 p-4">
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">PM10</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ suggestion.currentPm10 | number: '1.0-1' }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="space-y-3">
                 @for (tip of getSuggestionBullets(suggestion); track tip) {
-                  <div class="rounded-2xl border border-slate-200 p-4 text-sm leading-6 text-slate-700">
+                  <div class="advice-tip" style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 14px;font-size:13px;line-height:1.6;color:var(--gray-700)">
                     {{ tip }}
                   </div>
                 }
               </div>
-            </div>
-          } @else {
-            <div class="mt-5 rounded-2xl border border-dashed border-slate-300 p-5 text-sm leading-6 text-slate-600">
-              Fill in the form, then click <span class="font-semibold text-slate-900">Generate suggestion</span>
-              to create a district-specific recommendation card.
-            </div>
-          }
+            } @else {
+              <div class="empty-state">
+                <strong>No preview yet</strong>
+                <p>Fill in the form and click <strong>Generate suggestion</strong>.</p>
+              </div>
+            }
+          </div>
         </div>
 
-        <div class="panel-light rounded-[2rem] p-6 text-slate-900">
-          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-700">Saved suggestions</p>
+        <!-- Saved suggestions -->
+        <div class="card">
+          <div class="card-body">
+            <div class="card-subtitle">Saved suggestions</div>
+            <div class="card-title" style="margin-bottom:14px">Your saved cards</div>
 
-          @if (loading()) {
-            <div class="mt-5">
-              <app-loading-state
-                message="Loading saved suggestions..."
-                detail="Saved recommendation cards are being loaded from local storage."
-              />
-            </div>
-          } @else {
-            <div class="mt-4 grid gap-4 md:grid-cols-2">
-              @for (item of savedSuggestions(); track item.id) {
-                <article class="rounded-[1.75rem] border border-slate-200 bg-white p-5">
-                  <div class="flex items-start justify-between gap-4">
-                    <div>
-                      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">
-                        {{ item.district }}
-                      </p>
-                      <h2 class="mt-2 text-xl font-semibold text-slate-950">{{ item.summary }}</h2>
+            @if (loading()) {
+              <app-loading-state message="Loading saved suggestions…" />
+            } @else {
+              <div class="stack-sm">
+                @for (item of savedSuggestions(); track item.id) {
+                  <div class="suggestion-card">
+                    <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+                      <div>
+                        <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px">
+                          {{ item.district }}
+                        </div>
+                        <h3 style="margin:0;font-size:14px;font-weight:700">{{ item.summary }}</h3>
+                      </div>
+                      <span class="badge" [class]="'badge-' + item.riskLevel">{{ item.riskLevel }}</span>
                     </div>
-                    <span class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]" [class]="getStatusClass(item.riskLevel)">
-                      {{ item.riskLevel }}
-                    </span>
+
+                    <div class="suggestion-meta">
+                      <div>Activity: <span>{{ item.activityType }}</span></div>
+                      <div>Sensitivity: <span>{{ item.sensitivityLevel }}</span></div>
+                      <div>Travel: <span>{{ item.travelMode }}</span></div>
+                      <div>Saved: <span>{{ item.createdAt | date:'mediumDate' }}</span></div>
+                      @if (item.note) {
+                        <div>Note: <span>{{ item.note }}</span></div>
+                      }
+                    </div>
+
+                    <button
+                      type="button"
+                      (click)="deleteSavedSuggestion(item.id)"
+                      class="btn btn-danger btn-sm"
+                    >
+                      Delete
+                    </button>
                   </div>
 
-                  <div class="mt-4 space-y-2 text-sm text-slate-600">
-                    <p>Activity: <span class="font-medium text-slate-900">{{ item.activityType }}</span></p>
-                    <p>Sensitivity: <span class="font-medium text-slate-900">{{ item.sensitivityLevel }}</span></p>
-                    <p>Travel mode: <span class="font-medium text-slate-900">{{ item.travelMode }}</span></p>
-                    <p>Created: <span class="font-medium text-slate-900">{{ item.createdAt | date: 'mediumDate' }}</span></p>
-                    @if (item.note) {
-                      <p>Note: <span class="font-medium text-slate-900">{{ item.note }}</span></p>
-                    }
+                } @empty {
+                  <div class="empty-state">
+                    <strong>No saved suggestions</strong>
+                    <p>Generate and save a recommendation to keep polished examples for your presentation.</p>
                   </div>
-
-                  <button
-                    type="button"
-                    (click)="deleteSavedSuggestion(item.id)"
-                    class="mt-5 rounded-2xl border border-rose-200 px-4 py-3 text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
-                  >
-                    Delete suggestion
-                  </button>
-                </article>
-              } @empty {
-                <div class="rounded-[1.75rem] border border-dashed border-slate-300 p-8 text-sm leading-6 text-slate-600 md:col-span-2">
-                  Generate and save a recommendation to keep a few polished examples ready for your presentation.
-                </div>
-              }
-            </div>
-          }
+                }
+              </div>
+            }
+          </div>
         </div>
+
       </div>
-    </section>
+    </div>
   `,
 })
 export class CitiesPageComponent {
@@ -262,63 +218,43 @@ export class CitiesPageComponent {
   private readonly citiesService = inject(CitiesService);
 
   readonly savedSuggestions = signal<SavedSuggestion[]>([]);
-  readonly preview = signal<SuggestionPreview | null>(null);
-  readonly loading = signal(false);
-  readonly generating = signal(false);
-  readonly error = signal('');
-  readonly successMessage = signal('');
+  readonly preview          = signal<SuggestionPreview | null>(null);
+  readonly loading          = signal(false);
+  readonly generating       = signal(false);
+  readonly error            = signal('');
+  readonly successMessage   = signal('');
 
   form: SuggestionRequest = this.createEmptyForm();
 
-  constructor() {
-    this.loadSavedSuggestions();
-  }
+  constructor() { this.loadSavedSuggestions(); }
 
   loadSavedSuggestions(): void {
     this.loading.set(true);
     this.error.set('');
     this.citiesService.getSavedSuggestions().subscribe({
       next: (items) => this.savedSuggestions.set(items),
-      error: (error: Error) => {
-        this.error.set(error.message);
-        this.loading.set(false);
-      },
+      error: (error: Error) => { this.error.set(error.message); this.loading.set(false); },
       complete: () => this.loading.set(false),
     });
   }
 
   generateSuggestion(): void {
-    if (!this.form.district.trim()) {
-      this.error.set('Choose an Almaty district before generating a suggestion.');
-      return;
-    }
-
+    if (!this.form.district.trim()) { this.error.set('Choose an Almaty district before generating a suggestion.'); return; }
     this.generating.set(true);
     this.error.set('');
     this.successMessage.set('');
-
     this.airQualityService.getCurrentAirQuality(this.form.district.trim()).subscribe({
       next: (record) => this.preview.set(this.buildPreview(record)),
-      error: (error: Error) => {
-        this.preview.set(null);
-        this.error.set(error.message);
-        this.generating.set(false);
-      },
+      error: (error: Error) => { this.preview.set(null); this.error.set(error.message); this.generating.set(false); },
       complete: () => this.generating.set(false),
     });
   }
 
   saveSuggestion(): void {
     const preview = this.preview();
-
-    if (!preview) {
-      this.error.set('Generate a suggestion before saving it.');
-      return;
-    }
-
+    if (!preview) { this.error.set('Generate a suggestion before saving it.'); return; }
     this.error.set('');
     this.successMessage.set('');
-
     this.citiesService.addSavedSuggestion(preview).subscribe({
       next: (savedItem) => {
         this.savedSuggestions.update((items) => [savedItem, ...items]);
@@ -330,7 +266,6 @@ export class CitiesPageComponent {
   deleteSavedSuggestion(id: number): void {
     this.error.set('');
     this.successMessage.set('');
-
     this.citiesService.deleteSavedSuggestion(id).subscribe({
       next: () => {
         this.savedSuggestions.update((items) => items.filter((item) => item.id !== id));
@@ -368,55 +303,36 @@ export class CitiesPageComponent {
 
   getStatusClass(status: SavedSuggestion['riskLevel']): string {
     switch (status) {
-      case 'good':
-        return 'bg-emerald-100 text-emerald-700';
-      case 'moderate':
-        return 'bg-amber-100 text-amber-700';
-      case 'unhealthy':
-        return 'bg-orange-100 text-orange-700';
-      default:
-        return 'bg-rose-100 text-rose-700';
+      case 'good':      return 'bg-emerald-100 text-emerald-700';
+      case 'moderate':  return 'bg-amber-100 text-amber-700';
+      case 'unhealthy': return 'bg-orange-100 text-orange-700';
+      default:          return 'bg-rose-100 text-rose-700';
     }
   }
 
   private buildPreview(record: AirQualityRecord): SuggestionPreview {
     return {
-      district: record.district || this.form.district.trim(),
-      activityType: this.form.activityType,
+      district:         record.district || this.form.district.trim(),
+      activityType:     this.form.activityType,
       sensitivityLevel: this.form.sensitivityLevel,
-      travelMode: this.form.travelMode,
-      note: this.form.note?.trim() || '',
-      summary: this.composeSummary(record),
-      riskLevel: record.status,
-      currentAqi: record.aqi,
-      currentPm25: record.pm25,
-      currentPm10: record.pm10,
+      travelMode:       this.form.travelMode,
+      note:             this.form.note?.trim() || '',
+      summary:          this.composeSummary(record),
+      riskLevel:        record.status,
+      currentAqi:       record.aqi,
+      currentPm25:      record.pm25,
+      currentPm10:      record.pm10,
     };
   }
 
   private composeSummary(record: AirQualityRecord): string {
-    if (record.aqi <= 50) {
-      return `Good conditions for ${this.form.activityType.replace('-', ' ')} in ${record.district}`;
-    }
-
-    if (record.aqi <= 100) {
-      return `Moderate air quality: plan ${this.form.activityType.replace('-', ' ')} carefully in ${record.district}`;
-    }
-
-    if (record.aqi <= 150) {
-      return `Reduce outdoor ${this.form.activityType.replace('-', ' ')} in ${record.district}`;
-    }
-
+    if (record.aqi <= 50)  return `Good conditions for ${this.form.activityType.replace('-', ' ')} in ${record.district}`;
+    if (record.aqi <= 100) return `Moderate air quality: plan ${this.form.activityType.replace('-', ' ')} carefully in ${record.district}`;
+    if (record.aqi <= 150) return `Reduce outdoor ${this.form.activityType.replace('-', ' ')} in ${record.district}`;
     return `Prefer indoor plans and short trips in ${record.district}`;
   }
 
   private createEmptyForm(): SuggestionRequest {
-    return {
-      district: '',
-      activityType: 'walking',
-      sensitivityLevel: 'medium',
-      travelMode: 'public-transport',
-      note: '',
-    };
+    return { district: '', activityType: 'walking', sensitivityLevel: 'medium', travelMode: 'public-transport', note: '' };
   }
 }

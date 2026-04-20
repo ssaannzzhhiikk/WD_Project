@@ -10,126 +10,106 @@ import { LoginRequest } from '../../../../core/models/api.models';
   standalone: true,
   imports: [FormsModule, ErrorAlertComponent],
   template: `
-    <section class="grid w-full gap-6 lg:grid-cols-[1.2fr_0.9fr]">
-      <div class="panel-surface relative overflow-hidden rounded-[2rem] px-6 py-8 sm:px-8 lg:px-10">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(103,247,193,0.18),_transparent_32%)]"></div>
-        <div class="relative">
-          <p class="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-300">AirWatch</p>
-          <h1 class="page-title mt-4 text-white">Monitor the air before the air monitors you.</h1>
-          <p class="mt-5 max-w-2xl text-base leading-7 text-slate-300">
-            This Angular 21 frontend is prepared for a Django REST API and presents AQI, PM2.5,
-            PM10, location, and trend data in a simple defense-ready interface.
-          </p>
+    <div class="login-shell">
+      <div class="login-box">
 
-          <div class="mt-8 grid gap-4 md:grid-cols-3">
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <p class="text-sm font-medium text-cyan-300">Real-time dashboard</p>
-              <p class="mt-2 text-sm leading-6 text-slate-300">
-                Search cities, refresh readings, and load city history with API calls.
-              </p>
-            </article>
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <p class="text-sm font-medium text-cyan-300">Map-ready data</p>
-              <p class="mt-2 text-sm leading-6 text-slate-300">
-                Modular location rendering that can connect to Leaflet later without changing
-                services.
-              </p>
-            </article>
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <p class="text-sm font-medium text-cyan-300">Student friendly</p>
-              <p class="mt-2 text-sm leading-6 text-slate-300">
-                Clean routing, JWT auth flow, and presentation-ready UI for the project defense.
-              </p>
-            </article>
+        <div class="login-header">
+          <div class="login-logo">AW</div>
+          <h1>Sign in to AirWatch</h1>
+          <p>Almaty air quality monitoring dashboard</p>
+        </div>
+
+        <div class="card">
+          <div class="card-body-lg stack-sm">
+
+            @if (mockAuthEnabled) {
+              <div class="mock-info">
+                <strong>Demo mode enabled</strong>
+                Login with <strong>{{ mockCredentials.identifier }}</strong> /
+                <strong>{{ mockCredentials.password }}</strong>
+              </div>
+            }
+
+            <div class="form-group">
+              <label class="form-label" for="identifier">Username or email</label>
+              <input
+                id="identifier"
+                [(ngModel)]="identifier"
+                name="identifier"
+                type="text"
+                placeholder="student@example.com"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <input
+                id="password"
+                [(ngModel)]="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                class="form-control"
+              />
+            </div>
+
+            @if (formError()) {
+              <app-error-alert title="Login failed" [message]="formError()" />
+            }
+
+            <button
+              type="button"
+              (click)="login()"
+              class="btn btn-primary"
+              style="width:100%;margin-top:4px"
+              [disabled]="isSubmitting()"
+            >
+              {{ isSubmitting() ? 'Signing in…' : 'Login' }}
+            </button>
+
+            @if (mockAuthEnabled) {
+              <div class="login-divider">or</div>
+              <button
+                type="button"
+                (click)="useDemoAccount()"
+                class="btn btn-secondary"
+                style="width:100%"
+              >
+                Use demo account
+              </button>
+            }
+
+            <p style="font-size:13px;color:var(--gray-500);margin:4px 0 0;text-align:center">
+              Login stores a JWT token and redirects to the dashboard.
+            </p>
+
           </div>
+        </div>
 
-          <div class="mt-10 rounded-[1.75rem] border border-cyan-300/15 bg-slate-950/30 p-6">
-            <p class="text-sm uppercase tracking-[0.28em] text-slate-400">Project team</p>
-            <div class="mt-4 grid gap-3 text-sm text-slate-200 sm:grid-cols-3">
-              <p>Abish Nuralim</p>
-              <p>Shakirbek Amina</p>
-              <p>Omarkhanov Sanzhar</p>
+        <div style="margin-top:24px;display:grid;gap:12px;grid-template-columns:repeat(3,1fr)">
+          <div class="card" style="text-align:center">
+            <div class="card-body" style="padding:14px">
+              <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">Dashboard</div>
+              <div style="font-size:12px;color:var(--gray-500)">Live AQI &amp; district data</div>
+            </div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div class="card-body" style="padding:14px">
+              <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">Map</div>
+              <div style="font-size:12px;color:var(--gray-500)">Station overview</div>
+            </div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div class="card-body" style="padding:14px">
+              <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">Suggestions</div>
+              <div style="font-size:12px;color:var(--gray-500)">Personalized advice</div>
             </div>
           </div>
         </div>
+
       </div>
-
-      <div class="panel-light rounded-[2rem] px-6 py-8 text-slate-900 sm:px-8">
-        <p class="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-700">JWT Sign In</p>
-        <h2 class="mt-4 text-3xl font-semibold tracking-tight text-slate-950">Login to AirWatch</h2>
-        <p class="mt-3 text-sm leading-6 text-slate-600">
-          Use your backend-issued credentials. The frontend stores the access token in localStorage
-          and attaches it through an HTTP interceptor.
-        </p>
-
-        @if (mockAuthEnabled) {
-          <div class="mt-5 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-sm text-cyan-950">
-            <p class="font-semibold">Mock auth is enabled for demo mode</p>
-            <p class="mt-2 leading-6">
-              Login with <span class="font-semibold">{{ mockCredentials.identifier }}</span> and
-              <span class="font-semibold">{{ mockCredentials.password }}</span>, or use the demo
-              button below.
-            </p>
-          </div>
-        }
-
-        <div class="mt-6 space-y-5">
-          <label class="block">
-            <span class="mb-2 block text-sm font-medium text-slate-700">Username or email</span>
-            <input
-              [(ngModel)]="identifier"
-              name="identifier"
-              type="text"
-              placeholder="student@example.com"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-            >
-          </label>
-
-          <label class="block">
-            <span class="mb-2 block text-sm font-medium text-slate-700">Password</span>
-            <input
-              [(ngModel)]="password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-            >
-          </label>
-        </div>
-
-        @if (formError()) {
-          <div class="mt-5">
-            <app-error-alert title="Login failed" [message]="formError()" />
-          </div>
-        }
-
-        <button
-          type="button"
-          (click)="login()"
-          class="mt-6 w-full rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-        >
-          {{ isSubmitting() ? 'Signing in...' : 'Login' }}
-        </button>
-
-        @if (mockAuthEnabled) {
-          <button
-            type="button"
-            (click)="useDemoAccount()"
-            class="mt-3 w-full rounded-2xl border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 transition hover:border-cyan-500 hover:text-cyan-700"
-          >
-            Use demo account
-          </button>
-        }
-
-        <div class="mt-6 rounded-2xl bg-slate-100 p-4 text-sm text-slate-600">
-          <p class="font-semibold text-slate-900">Demo flow</p>
-          <p class="mt-2 leading-6">
-            Successful login stores the JWT token, updates auth state, and redirects to
-            <span class="font-semibold text-slate-900">/dashboard</span>.
-          </p>
-        </div>
-      </div>
-    </section>
+    </div>
   `,
 })
 export class LoginPageComponent {
@@ -153,17 +133,14 @@ export class LoginPageComponent {
 
   login(): void {
     const identifier = this.identifier.trim();
-    const password = this.password.trim();
+    const password   = this.password.trim();
 
     if (!identifier || !password) {
       this.formError.set('Please enter both your username or email and your password.');
       return;
     }
 
-    const credentials: LoginRequest = {
-      identifier,
-      password,
-    };
+    const credentials: LoginRequest = { identifier, password };
 
     this.isSubmitting.set(true);
     this.formError.set('');
@@ -183,7 +160,7 @@ export class LoginPageComponent {
 
   useDemoAccount(): void {
     this.identifier = this.mockCredentials.identifier;
-    this.password = this.mockCredentials.password;
+    this.password   = this.mockCredentials.password;
     this.login();
   }
 }

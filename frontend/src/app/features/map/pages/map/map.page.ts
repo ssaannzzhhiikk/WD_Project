@@ -21,198 +21,166 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
   standalone: true,
   imports: [FormsModule, DatePipe, DecimalPipe, ErrorAlertComponent, LoadingStateComponent],
   template: `
-    <section class="flex w-full flex-col gap-6">
-      <div class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <div class="panel-surface rounded-[2rem] px-6 py-8 sm:px-8">
-          <p class="text-sm font-semibold uppercase tracking-[0.32em] text-cyan-300">Station Map</p>
-          <h1 class="page-title mt-4 text-white">Live Almaty station overview</h1>
-          <p class="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-            This page now uses a real map. Station dots stay color-coded by air quality so it is
-            easier to see which areas are safer and which ones need attention.
-          </p>
+    <div class="stack">
+
+      <div class="page-header">
+        <h1>Station Map</h1>
+        <p>Live Almaty monitoring stations — color coded by air quality</p>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="form-group" style="flex:1;min-width:160px">
+          <label class="form-label">District</label>
+          <input
+            [(ngModel)]="districtFilter"
+            name="districtFilter"
+            type="text"
+            placeholder="e.g. Bostandyk"
+            class="form-control"
+          />
         </div>
-
-        <div class="panel-light rounded-[2rem] px-6 py-8 text-slate-900">
-          <div class="grid gap-4 md:grid-cols-3">
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">District</span>
-              <input
-                [(ngModel)]="districtFilter"
-                name="districtFilter"
-                type="text"
-                placeholder="For example Bostandyk"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              />
-            </label>
-
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">Source</span>
-              <input
-                [(ngModel)]="sourceFilter"
-                name="sourceFilter"
-                type="text"
-                placeholder="airgradient or clarity"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              />
-            </label>
-
-            <label class="block">
-              <span class="mb-2 block text-sm font-medium text-slate-700">Minimum AQI</span>
-              <input
-                [(ngModel)]="minAqiFilter"
-                name="minAqiFilter"
-                type="number"
-                min="0"
-                placeholder="60"
-                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/15"
-              />
-            </label>
-          </div>
-
-          <div class="mt-5 flex flex-wrap gap-3">
-            <button
-              type="button"
-              (click)="refreshMapData()"
-              class="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              Refresh map data
-            </button>
-            <button
-              type="button"
-              (click)="applyFilters()"
-              class="rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-cyan-500 hover:text-cyan-700"
-            >
-              Apply filters
-            </button>
-            <button
-              type="button"
-              (click)="clearFilters()"
-              class="rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 transition hover:border-cyan-500 hover:text-cyan-700"
-            >
-              Reset filters
-            </button>
-          </div>
-
-          <div class="mt-5 flex flex-wrap gap-2">
-            @for (item of legendItems; track item.label) {
-              <span class="metric-chip" [class]="item.className">{{ item.label }}</span>
-            }
-          </div>
+        <div class="form-group" style="flex:1;min-width:160px">
+          <label class="form-label">Source</label>
+          <input
+            [(ngModel)]="sourceFilter"
+            name="sourceFilter"
+            type="text"
+            placeholder="airgradient or clarity"
+            class="form-control"
+          />
         </div>
+        <div class="form-group" style="width:140px">
+          <label class="form-label">Min AQI</label>
+          <input
+            [(ngModel)]="minAqiFilter"
+            name="minAqiFilter"
+            type="number"
+            min="0"
+            placeholder="60"
+            class="form-control"
+          />
+        </div>
+        <div class="btn-row" style="align-self:flex-end">
+          <button type="button" (click)="refreshMapData()" class="btn btn-primary">Refresh</button>
+          <button type="button" (click)="applyFilters()"   class="btn btn-secondary">Apply filters</button>
+          <button type="button" (click)="clearFilters()"   class="btn btn-secondary">Clear</button>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        @for (item of legendItems; track item.label) {
+          <span class="legend-chip" [class]="item.className">{{ item.label }}</span>
+        }
       </div>
 
       @if (error()) {
         <app-error-alert title="Map request failed" [message]="error()" />
       }
 
-      <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <div class="panel-light rounded-[2rem] p-4 text-slate-900 sm:p-6">
-          <div class="relative min-h-[540px] overflow-hidden rounded-[1.5rem]">
-            <div #mapHost class="h-[540px] w-full"></div>
+      <div class="sidebar-layout" style="grid-template-columns:1fr 320px">
+
+        <!-- Map -->
+        <div class="stack-sm">
+          <div class="map-wrapper" style="position:relative">
+            <div #mapHost style="height:480px;width:100%"></div>
 
             @if (loading()) {
-              <div class="absolute inset-0 z-[500] flex items-center justify-center bg-white/80 p-6 backdrop-blur-sm">
-                <app-loading-state
-                  message="Loading Almaty station map..."
-                  detail="AirWatch is requesting fresh PM2.5, PM10, and NO2 station points from the API."
-                />
+              <div style="position:absolute;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.85);border-radius:var(--radius-lg)">
+                <app-loading-state message="Loading station map…" />
               </div>
             }
 
             @if (!loading() && !locations().length) {
-              <div class="absolute inset-0 z-[500] flex items-center justify-center bg-white/88 p-8 text-center text-slate-600 backdrop-blur-sm">
-                <div>
-                  <p class="text-lg font-semibold text-slate-900">No fresh stations found</p>
-                  <p class="mt-2 max-w-md text-sm leading-6">
-                    Adjust the district or source filters, then request the data again.
-                  </p>
+              <div style="position:absolute;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);border-radius:var(--radius-lg)">
+                <div class="empty-state" style="border:none">
+                  <strong>No stations found</strong>
+                  <p>Adjust filters and try again.</p>
                 </div>
               </div>
             }
+          </div>
+
+          <!-- Station list -->
+          <div class="card">
+            <div class="card-body">
+              <div class="card-subtitle">Loaded stations</div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;max-height:240px;overflow-y:auto">
+                @for (location of locations(); track location.id) {
+                  <button
+                    type="button"
+                    (click)="selectLocation(location, true)"
+                    class="station-item"
+                    style="width:100%;background:none;cursor:pointer;text-align:left"
+                  >
+                    <div>
+                      <div class="station-name">{{ location.label }}</div>
+                      <div class="station-meta">{{ location.district }} · {{ location.source }}</div>
+                    </div>
+                    <span class="badge" [class]="getAqiBadgeClass(location.aqi)">
+                      AQI {{ location.aqi | number:'1.0-0' }}
+                    </span>
+                  </button>
+                } @empty {
+                  <p style="font-size:13px;color:var(--gray-500);padding:8px 0">
+                    No station data yet. Click <strong>Refresh</strong> to load.
+                  </p>
+                }
+              </div>
+            </div>
           </div>
         </div>
 
-        <aside class="flex flex-col gap-6">
-          <div class="panel-surface rounded-[2rem] px-6 py-6">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <p class="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-300">Selected station</p>
-                <h2 class="mt-2 text-2xl font-semibold text-white">
-                  {{ selectedLocation()?.label || 'Choose a marker' }}
-                </h2>
-              </div>
-              @if (selectedLocation()) {
-                <button
-                  type="button"
-                  (click)="loadSelectedDistrictDetails()"
-                  class="rounded-2xl border border-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-                >
-                  Load district details
-                </button>
-              }
+        <!-- Detail panel -->
+        <aside class="advice-sidebar" style="background:white">
+          <div class="flex-between" style="margin-bottom:14px;">
+            <div>
+              <div class="card-subtitle" style="">Selected station</div>
+              <h2 style="margin:4px 0 0;font-size:17px;font-weight:700;color:black">
+                {{ selectedLocation()?.label || 'Choose a marker' }}
+              </h2>
             </div>
-
-            @if (detailsError()) {
-              <div class="mt-5">
-                <app-error-alert title="Detail request failed" [message]="detailsError()" />
-              </div>
-            }
-
-            @if (detailsLoading()) {
-              <div class="mt-5">
-                <app-loading-state
-                  message="Loading district details..."
-                  detail="AirWatch is requesting the latest district average for the selected station."
-                />
-              </div>
-            } @else if (currentDetails(); as details) {
-              <div class="mt-5 space-y-4">
-                <div class="rounded-[1.5rem] border p-5 text-sm" [class]="getAqiSurfaceClass(details.aqi)">
-                  <p>District: <span class="font-medium">{{ details.district }}</span></p>
-                  <p>AQI: <span class="font-medium">{{ details.aqi | number: '1.0-0' }}</span></p>
-                  <p>PM2.5: <span class="font-medium">{{ details.pm25 | number: '1.0-1' }}</span></p>
-                  <p>PM10: <span class="font-medium">{{ details.pm10 | number: '1.0-1' }}</span></p>
-                  <p>Risk level: <span class="font-medium">{{ getRiskLabel(details.aqi) }}</span></p>
-                  <p>Updated: <span class="font-medium">{{ details.updatedAt | date: 'medium' }}</span></p>
-                </div>
-              </div>
-            } @else {
-              <div class="mt-5 rounded-[1.5rem] border border-dashed border-white/15 p-5 text-sm leading-6 text-slate-300">
-                Select a station marker, then click <span class="font-semibold text-white">Load district details</span>
-                to fetch a district-wide summary.
-              </div>
+            @if (selectedLocation()) {
+              <button
+                type="button"
+                (click)="loadSelectedDistrictDetails()"
+                class="btn btn-sm"
+                style="background:rgba(255,255,255,0.1);color:black;border-color:rgba(255,255,255,0.2);flex-shrink:0"
+              >
+                Load details
+              </button>
             }
           </div>
 
-          <div class="panel-light rounded-[2rem] p-6 text-slate-900">
-            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-cyan-700">Loaded stations</p>
-            <div class="mt-4 space-y-3 max-h-[30rem] overflow-y-auto pr-1">
-              @for (location of locations(); track location.id) {
-                <button
-                  type="button"
-                  (click)="selectLocation(location, true)"
-                  class="flex w-full items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-left transition hover:border-cyan-500 hover:bg-cyan-50"
-                >
-                  <div>
-                    <p class="font-semibold text-slate-950">{{ location.label }}</p>
-                    <p class="text-xs uppercase tracking-[0.24em] text-slate-500">
-                      {{ location.district }} • {{ location.source }}
-                    </p>
-                  </div>
-                  <span class="rounded-full px-3 py-1 text-xs font-semibold" [class]="getAqiBadgeClass(location.aqi)">
-                    AQI {{ location.aqi | number: '1.0-0' }}
-                  </span>
-                </button>
-              } @empty {
-                <p class="rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
-                  The API has not returned any fresh Almaty station markers yet.
-                </p>
-              }
+          @if (detailsError()) {
+            <div class="alert alert-error" style="margin-bottom:12px">
+              <div class="alert-title">Detail request failed</div>
+              <div class="alert-msg">{{ detailsError() }}</div>
             </div>
-          </div>
+          }
+
+          @if (detailsLoading()) {
+            <app-loading-state message="Loading district details…" />
+          } @else if (currentDetails(); as details) {
+            <div class="stack-sm">
+              <div class="advice-metric" style="color:black">District <span>{{ details.district }}</span></div>
+              <div class="advice-metric" style="color:black">AQI <span>{{ details.aqi | number:'1.0-0' }} — {{ getRiskLabel(details.aqi) }}</span></div>
+              <div class="advice-metric" style="color:black">PM2.5 <span>{{ details.pm25 | number:'1.0-1' }}</span></div>
+              <div class="advice-metric" style="color:black" >PM10 <span>{{ details.pm10 | number:'1.0-1' }}</span></div>
+              <div class="advice-metric" style="color:black">Updated <span>{{ details.updatedAt | date:'shortTime' }}</span></div>
+            </div>
+          } @else {
+            <div style="font-size:13px;color:black;line-height:1.6;border:1px dashed rgba(255,255,255,0.15);border-radius:8px;padding:16px">
+              Click a marker on the map or a station in the list, then click
+              <strong style="color:black">Load details</strong>
+              to see district readings.
+            </div>
+          }
         </aside>
+
       </div>
-    </section>
+    </div>
   `,
 })
 export class MapPageComponent implements AfterViewInit {
@@ -224,19 +192,19 @@ export class MapPageComponent implements AfterViewInit {
   sourceFilter = '';
   minAqiFilter: number | null = null;
 
-  readonly locations = signal<MapLocation[]>([]);
+  readonly locations        = signal<MapLocation[]>([]);
   readonly selectedLocation = signal<MapLocation | null>(null);
-  readonly currentDetails = signal<AirQualityRecord | null>(null);
-  readonly loading = signal(false);
-  readonly detailsLoading = signal(false);
-  readonly error = signal('');
-  readonly detailsError = signal('');
+  readonly currentDetails   = signal<AirQualityRecord | null>(null);
+  readonly loading          = signal(false);
+  readonly detailsLoading   = signal(false);
+  readonly error            = signal('');
+  readonly detailsError     = signal('');
 
   readonly legendItems = [
-    { label: 'Good', className: 'metric-good' },
-    { label: 'Moderate', className: 'metric-moderate' },
-    { label: 'Unhealthy', className: 'metric-unhealthy' },
-    { label: 'Hazardous', className: 'metric-hazardous' },
+    { label: 'Good',      className: 'legend-chip metric-good' },
+    { label: 'Moderate',  className: 'legend-chip metric-moderate' },
+    { label: 'Unhealthy', className: 'legend-chip metric-unhealthy' },
+    { label: 'Hazardous', className: 'legend-chip metric-hazardous' },
   ];
 
   private map: L.Map | null = null;
@@ -266,7 +234,6 @@ export class MapPageComponent implements AfterViewInit {
   refreshMapData(): void {
     this.loading.set(true);
     this.error.set('');
-
     this.airQualityService.getMapData().subscribe({
       next: (locations) => {
         this.locations.set(locations);
@@ -285,11 +252,10 @@ export class MapPageComponent implements AfterViewInit {
   applyFilters(): void {
     this.loading.set(true);
     this.error.set('');
-
     this.airQualityService.getMapData({
       district: this.districtFilter.trim() || undefined,
-      source: this.sourceFilter.trim() || undefined,
-      min_aqi: this.minAqiFilter ?? undefined,
+      source:   this.sourceFilter.trim() || undefined,
+      min_aqi:  this.minAqiFilter ?? undefined,
     }).subscribe({
       next: (locations) => {
         this.locations.set(locations);
@@ -307,8 +273,8 @@ export class MapPageComponent implements AfterViewInit {
 
   clearFilters(): void {
     this.districtFilter = '';
-    this.sourceFilter = '';
-    this.minAqiFilter = null;
+    this.sourceFilter   = '';
+    this.minAqiFilter   = null;
     this.refreshMapData();
   }
 
@@ -327,15 +293,12 @@ export class MapPageComponent implements AfterViewInit {
 
   loadSelectedDistrictDetails(): void {
     const location = this.selectedLocation();
-
     if (!location?.district) {
       this.detailsError.set('Select a station before loading district details.');
       return;
     }
-
     this.detailsLoading.set(true);
     this.detailsError.set('');
-
     this.airQualityService.getCurrentAirQuality(location.district).subscribe({
       next: (details) => this.currentDetails.set(details),
       error: (error: Error) => {
@@ -348,57 +311,28 @@ export class MapPageComponent implements AfterViewInit {
   }
 
   getAqiSurfaceClass(aqi: number): string {
-    if (aqi <= 50) {
-      return 'metric-good';
-    }
-
-    if (aqi <= 100) {
-      return 'metric-moderate';
-    }
-
-    if (aqi <= 150) {
-      return 'metric-unhealthy';
-    }
-
+    if (aqi <= 50)  return 'metric-good';
+    if (aqi <= 100) return 'metric-moderate';
+    if (aqi <= 150) return 'metric-unhealthy';
     return 'metric-hazardous';
   }
 
   getAqiBadgeClass(aqi: number): string {
-    if (aqi <= 50) {
-      return 'bg-emerald-100 text-emerald-700';
-    }
-
-    if (aqi <= 100) {
-      return 'bg-amber-100 text-amber-700';
-    }
-
-    if (aqi <= 150) {
-      return 'bg-orange-100 text-orange-700';
-    }
-
-    return 'bg-rose-100 text-rose-700';
+    if (aqi <= 50)  return 'badge-good';
+    if (aqi <= 100) return 'badge-moderate';
+    if (aqi <= 150) return 'badge-unhealthy';
+    return 'badge-hazardous';
   }
 
   getRiskLabel(aqi: number): string {
-    if (aqi <= 50) {
-      return 'Good';
-    }
-
-    if (aqi <= 100) {
-      return 'Moderate';
-    }
-
-    if (aqi <= 150) {
-      return 'Unhealthy';
-    }
-
+    if (aqi <= 50)  return 'Good';
+    if (aqi <= 100) return 'Moderate';
+    if (aqi <= 150) return 'Unhealthy';
     return 'Hazardous';
   }
 
   private initializeMap(): void {
-    if (this.map) {
-      return;
-    }
+    if (this.map) return;
 
     this.map = L.map(this.mapHost().nativeElement, {
       zoomControl: true,
@@ -415,33 +349,28 @@ export class MapPageComponent implements AfterViewInit {
   }
 
   private renderMarkers(): void {
-    if (!this.map) {
-      return;
-    }
+    if (!this.map) return;
 
     this.markerLayer.clearLayers();
-
-    const locations = this.locations();
-    const selectedId = this.selectedLocation()?.id;
+    const locations   = this.locations();
+    const selectedId  = this.selectedLocation()?.id;
 
     for (const location of locations) {
       const marker = L.circleMarker([location.latitude, location.longitude], {
-        radius: selectedId === location.id ? 11 : 9,
-        color: '#ffffff',
-        weight: 2,
-        fillColor: this.getMarkerColor(location.aqi),
+        radius:      selectedId === location.id ? 11 : 9,
+        color:       '#ffffff',
+        weight:      2,
+        fillColor:   this.getMarkerColor(location.aqi),
         fillOpacity: 0.9,
       });
 
-      marker.bindPopup(
-        `
-          <div style="min-width: 180px;">
-            <strong>${this.escapeHtml(location.label || 'Station')}</strong><br>
-            <span>${this.escapeHtml(location.district || 'Almaty')}</span><br>
-            <span>AQI ${Math.round(location.aqi)} • PM2.5 ${location.pm25.toFixed(1)} • PM10 ${location.pm10.toFixed(1)}</span>
-          </div>
-        `,
-      );
+      marker.bindPopup(`
+        <div style="min-width:180px;font-size:13px">
+          <strong style="display:block;margin-bottom:4px">${this.escapeHtml(location.label || 'Station')}</strong>
+          <span style="color:#64748b">${this.escapeHtml(location.district || 'Almaty')}</span><br>
+          AQI ${Math.round(location.aqi)} · PM2.5 ${location.pm25.toFixed(1)} · PM10 ${location.pm10.toFixed(1)}
+        </div>
+      `);
 
       marker.on('click', () => this.selectLocation(location));
       marker.addTo(this.markerLayer);
@@ -449,7 +378,7 @@ export class MapPageComponent implements AfterViewInit {
 
     if (locations.length) {
       const bounds = L.latLngBounds(
-        locations.map((location) => [location.latitude, location.longitude] as [number, number]),
+        locations.map((loc) => [loc.latitude, loc.longitude] as [number, number]),
       );
       this.map.fitBounds(bounds.pad(0.12), { maxZoom: 13 });
     } else {
@@ -458,18 +387,9 @@ export class MapPageComponent implements AfterViewInit {
   }
 
   private getMarkerColor(aqi: number): string {
-    if (aqi <= 50) {
-      return '#22c55e';
-    }
-
-    if (aqi <= 100) {
-      return '#f59e0b';
-    }
-
-    if (aqi <= 150) {
-      return '#f97316';
-    }
-
+    if (aqi <= 50)  return '#22c55e';
+    if (aqi <= 100) return '#f59e0b';
+    if (aqi <= 150) return '#f97316';
     return '#f43f5e';
   }
 
