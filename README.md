@@ -1,64 +1,56 @@
-# 🌍 Project 09 --- AirWatch
+# AirWatch
 
-A web-based system that monitors air quality in real time using public
-APIs. The platform provides users with up-to-date air pollution data,
-including key indicators such as PM2.5, PM10, and AQI, through a clean
-dashboard and interactive map.
+AirWatch is a web app for checking air quality in Almaty. It has an Angular frontend and a Django REST Framework backend with JWT authentication.
 
----
-
-## 👥 Group Members
+## Team Members
 
 | Name | Role |
 |---|---|
-| Abish Nuralim | — |
-| Shakirbek Amina | — |
-| Omarkhanov Sanzhar | — |
+| Abish Nuralim | Backend Developer |
+| Shakirbek Amina | Full-Stack + QA Tester |
+| Omarkhanov Sanzhar | Frontend Developer |
 
----
+## Features
 
-## 🧰 Tech Stack
+- Dashboard with AQI, PM2.5, PM10, and district data
+- Map page with air quality locations and filters
+- Suggestions page for creating and saving air-quality advice
+- Login/logout with JWT tokens
+- Protected API endpoints for authenticated users
+- Error handling for frontend and backend requests
 
-| Layer | Technology |
-|---|---|
-| Frontend | Angular + TailwindCSS |
-| Backend | Django + Django REST Framework |
-| Database | PostgreSQL |
-| Air Quality Data | OpenAQ Public API |
+## Tech Stack
 
----
+- Frontend: Angular, Angular Router, HttpClient, Forms
+- Backend: Django, Django REST Framework, Simple JWT
+- Database: SQLite
+- CORS: django-cors-headers
 
-## 📁 Project Structure
+## Project Structure
 
-    airwatch/
-    ├── frontend/          # Angular app
-    │   └── src/
-    │       ├── app/
-    │       │   ├── components/
-    │       │   │   ├── dashboard/
-    │       │   │   ├── map/
-    │       │   │   └── login/
-    │       │   ├── services/
-    │       │   └── app.routes.ts
-    │       └── index.html
-    └── backend/           # Django project
-        ├── airquality/    # Django app
-        ├── manage.py
-        └── requirements.txt
-
-------------------------------------------------------------------------
-
-## 🚀 Getting Started
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-ng serve
+```text
+frontend/   Angular application
+backend/    Django API
 ```
 
-### Backend
+Main frontend files:
+
+- `frontend/src/app/app.routes.ts`
+- `frontend/src/app/core/services/`
+- `frontend/src/app/features/dashboard/`
+- `frontend/src/app/features/map/`
+- `frontend/src/app/features/cities/`
+- `frontend/src/app/features/auth/`
+
+Main backend files:
+
+- `backend/apps/users/`
+- `backend/apps/cities/`
+- `backend/apps/air_quality/`
+- `backend/config/settings.py`
+- `backend/config/urls.py`
+
+## Run Backend
 
 ```bash
 cd backend
@@ -67,19 +59,33 @@ python manage.py migrate
 python manage.py runserver
 ```
 
----
+## Run Frontend
 
-## 🌐 Data Sources
+```bash
+cd frontend
+npm install
+npm start
+```
 
-- [OpenAQ](https://openaq.org/) — Real-time air quality data
+Frontend runs on `http://localhost:4200`.
+Backend runs on `http://127.0.0.1:8000`.
 
----
+## API/Auth
 
-## 📌 Key Features
+The backend uses JWT authentication with Simple JWT. After login, the frontend stores the access token and sends it in requests as:
 
-- Real-time air quality dashboard (PM2.5, PM10, AQI)
-- Interactive pollution map with Leaflet.js
-- User authentication (login/logout with JWT)
-- Ability to view and manage selected cities
-- REST API powered by Django REST Framework
-- Error handling and user-friendly interface
+```text
+Authorization: Bearer <token>
+```
+
+## Main Requirements Covered
+
+- Angular routes and navigation
+- Click events and form controls
+- `@if` and `@for`
+- Angular services with `HttpClient`
+- JWT authentication
+- Django models, serializers, FBV, CBV
+- CRUD operations for saved suggestions/cities
+- CORS support
+- Objects linked to the authenticated user
