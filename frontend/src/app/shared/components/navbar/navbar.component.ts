@@ -22,7 +22,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <nav class="navbar-nav" style="display:none" [style.display]="'flex'">
               <a routerLink="/dashboard" routerLinkActive="active-link" class="nav-link">Dashboard</a>
               <a routerLink="/map"       routerLinkActive="active-link" class="nav-link">Map</a>
-              <a routerLink="/cities"    routerLinkActive="active-link" class="nav-link">Suggestions</a>
+              <a routerLink="/suggestions"    routerLinkActive="active-link" class="nav-link">Suggestions</a>
             </nav>
 
             <div class="navbar-user">

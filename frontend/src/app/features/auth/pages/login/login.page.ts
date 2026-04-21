@@ -22,14 +22,6 @@ import { LoginRequest } from '../../../../core/models/api.models';
         <div class="card">
           <div class="card-body-lg stack-sm">
 
-            @if (mockAuthEnabled) {
-              <div class="mock-info">
-                <strong>Demo mode enabled</strong>
-                Login with <strong>{{ mockCredentials.identifier }}</strong> /
-                <strong>{{ mockCredentials.password }}</strong>
-              </div>
-            }
-
             <div class="form-group">
               <label class="form-label" for="identifier">Username or email</label>
               <input
@@ -79,10 +71,6 @@ import { LoginRequest } from '../../../../core/models/api.models';
                 Use demo account
               </button>
             }
-
-            <p style="font-size:13px;color:var(--gray-500);margin:4px 0 0;text-align:center">
-              Login stores a JWT token and redirects to the dashboard.
-            </p>
 
           </div>
         </div>

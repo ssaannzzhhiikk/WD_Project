@@ -22,7 +22,7 @@ export const routes: Routes = [
     loadComponent: () => import('./features/map/pages/map/map.page').then((m) => m.MapPageComponent),
   },
   {
-    path: 'cities',
+    path: 'suggestions',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/cities/pages/cities/cities.page').then((m) => m.CitiesPageComponent),
